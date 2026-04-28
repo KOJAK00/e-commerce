@@ -1,6 +1,6 @@
-from sqlalchemy import Column, Integer, String, ForeignKey,Date,func,Text,Boolean,Numeric
+from sqlalchemy import Column, Integer, String, ForeignKey,Date,func,Text,Boolean,Numeric,Float,DateTime
 from sqlalchemy.orm import relationship,DeclarativeBase
-from datetime import date
+from datetime import date,datetime
 from database import Base
 
 class User(Base):
@@ -37,3 +37,29 @@ class Product(Base):
     product_image = Column(String(200),nullable=False,default="product_default.jpg")
     business_id = Column(Integer,ForeignKey("businesses.id"), nullable=False)
     business = relationship("Business", back_populates="products")
+
+class Auction(Base):
+    __tablename__ = "auctions"
+
+    id = Column(Integer, primary_key=True, index=True)
+    product_id = Column(Integer, ForeignKey("products.id"))
+    
+    start_price = Column(Float)
+    current_price = Column(Float, default=0)
+    end_time = Column(DateTime)
+
+    is_active = Column(Boolean, default=True)
+    business_id = Column(Integer,ForeignKey("businesses.id"), nullable=False)
+    product = relationship("Product")
+    business = relationship("Business")
+
+class Bid(Base):
+    __tablename__ = "bids"
+
+    id = Column(Integer, primary_key=True)
+    auction_id = Column(Integer, ForeignKey("auctions.id"))
+    user_id = Column(Integer, ForeignKey("users.id"))
+
+    amount = Column(Float)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    

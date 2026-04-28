@@ -1,7 +1,7 @@
 from typing import List,Optional
 from pydantic import BaseModel,ConfigDict,EmailStr
 import hashing
-from datetime import date
+from datetime import date,datetime
 from fastapi import File,UploadFile
 class user(BaseModel):
     username : str
@@ -51,7 +51,10 @@ class ProductResponse(BaseModel):
 
     class Config:
         from_attributes = True
-
+class AuctionCreate(BaseModel):
+    product_id: int
+    start_price: float
+    end_time: datetime
 class Token(BaseModel):
     access_token: str
     token_type: str
