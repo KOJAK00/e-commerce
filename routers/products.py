@@ -1,10 +1,11 @@
-from fastapi import APIRouter,Depends,HTTPException
+from fastapi import APIRouter,Depends,HTTPException,UploadFile,File
 from sqlalchemy.orm import Session
-
+from utils.file_upload import save_file
 import models,schemas,database,oauth2
 router = APIRouter(prefix="/products", tags=["products"])
 @router.post('', response_model=schemas.ProductResponse)
-def create_product(business_id: int,request: schemas.ProductCreate,db: Session = Depends(database.get_db),current_user: models.User = Depends(oauth2.get_current_user)):
+
+def create_product(business_id: int,request: schemas.ProductCreate =Depends(),product_image: UploadFile =File(None),db: Session = Depends(database.get_db),current_user: models.User = Depends(oauth2.get_current_user)):
     business = db.query(models.Business).filter(
         models.Business.id == business_id,
         models.Business.owner_id == current_user.id
@@ -12,17 +13,14 @@ def create_product(business_id: int,request: schemas.ProductCreate,db: Session =
 
     if not business:
         raise HTTPException(status_code=404, detail="Business not found")
+    image_path = "uploads/products/default.jpg"
 
+    if product_image:
+      image_path = save_file(product_image, "products")
     new_product = models.Product(
-        name=request.name,
-        category=request.category,
-        original_price=request.original_price,
-        new_price=request.new_price,
-        percentage_discount=request.percentage_discount,
-        offer_expiration_date=request.offer_expiration_date,
-        product_image=request.product_image if request.product_image else "product_default.jpg",
-        business_id=business_id
-    )
+            **request.model_dump(),
+            product_image=image_path,
+            business_id=business_id)
     db.add(new_product)
     db.commit()
     db.refresh(new_product)

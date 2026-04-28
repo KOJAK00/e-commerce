@@ -2,7 +2,7 @@ from typing import List,Optional
 from pydantic import BaseModel,ConfigDict,EmailStr
 import hashing
 from datetime import date
-
+from fastapi import File,UploadFile
 class user(BaseModel):
     username : str
     email : EmailStr
@@ -22,7 +22,6 @@ class BusinessCreate(BaseModel):
     city: str
     region: str
     business_description: str | None = None
-    logo: Optional[str] = None
 class BusinessResponse(BaseModel):
     id: int
     business_name: str
@@ -40,7 +39,6 @@ class ProductCreate(BaseModel):
     new_price: Optional[float] = None
     percentage_discount: Optional[int] = None
     offer_expiration_date: Optional[date] = None
-    product_image: Optional[str] = None
 
 class ProductResponse(BaseModel):
     id: int

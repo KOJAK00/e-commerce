@@ -1,13 +1,14 @@
 from sqlalchemy.orm import Session
-from fastapi import FastAPI,Depends,status,Response,HTTPException,APIRouter
+from fastapi import FastAPI,Depends,status,Response,HTTPException,APIRouter,UploadFile, File
+from utils.file_upload import save_file
 from typing import List
 import schemas,database,models,oauth2
 
 router = APIRouter(prefix='/business',tags=["business"])
 
-@router.post('', response_model=schemas.BusinessResponse)
+@router.post('')
 def create_business(
-    request: schemas.BusinessCreate,
+    request: schemas.BusinessCreate =Depends(),logo: UploadFile = File(None),
     db: Session = Depends(database.get_db),
     current_user: models.User = Depends(oauth2.get_current_user) 
 ):
@@ -17,15 +18,16 @@ def create_business(
       raise HTTPException(
         status_code=400,
         detail="Business name already exists")
-    new_business = models.Business(
-            business_name=request.business_name,
-            city=request.city,
-            region=request.region,
-            business_description=request.business_description,
-            owner_id=current_user.id,
-            logo = request.logo if request.logo else "default.jpg"
-        )
+    logo_path = "uploads/logos/default.jpg"
 
+    if logo:
+      logo_path = save_file(logo, "logos")
+    new_business = models.Business(
+            
+            **request.model_dump(),
+            owner_id=current_user.id,
+            logo=logo_path
+        )
     db.add(new_business)
     db.commit()
     db.refresh(new_business)
