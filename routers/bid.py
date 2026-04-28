@@ -21,10 +21,13 @@ def place_bid(
     if not auction:
         raise HTTPException(status_code=404, detail="Auction not found")
     if auction.end_time < datetime.utcnow():
+       auction.is_active = False
+       db.commit()
        raise HTTPException(
           status_code=400,
           detail="Auction ended"
-    )
+        )
+        
     if amount <= auction.current_price:
         raise HTTPException(status_code=400, detail="Bid must be higher")
 

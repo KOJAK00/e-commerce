@@ -32,7 +32,7 @@ def get_products(business_id: int,db: Session = Depends(database.get_db)):
 
     return products
 
-@router.put('{id}', response_model=schemas.ProductResponse)
+@router.put('/{id}', response_model=schemas.ProductResponse)
 def update_product(
     id: int,
     request: schemas.ProductCreate,
@@ -60,7 +60,7 @@ def update_product(
 
     return product
 
-@router.delete("{id}")
+@router.delete("/{id}")
 def delete_product(
     id: int,
     db: Session = Depends(database.get_db),
