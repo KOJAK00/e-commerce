@@ -22,12 +22,14 @@ class BusinessCreate(BaseModel):
     city: str
     region: str
     business_description: str | None = None
+    logo: Optional[str] = None
 class BusinessResponse(BaseModel):
     id: int
     business_name: str
     city: str
     region: str
     business_description: str | None
+    logo: Optional[str] | None
 
     class Config:
         from_attributes = True
