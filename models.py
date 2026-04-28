@@ -24,6 +24,7 @@ class Business(Base):
     owner_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     owner = relationship("User", back_populates="businesses")
     products = relationship("Product", back_populates="business")
+
 class Product(Base):
     __tablename__ = 'products'
     id = Column(Integer,primary_key=True,index=True)

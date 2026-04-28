@@ -33,6 +33,26 @@ class BusinessResponse(BaseModel):
 
     class Config:
         from_attributes = True
+class ProductCreate(BaseModel):
+    name: str
+    category: str
+    original_price: float
+    new_price: Optional[float] = None
+    percentage_discount: Optional[int] = None
+    offer_expiration_date: Optional[date] = None
+    product_image: Optional[str] = None
+
+class ProductResponse(BaseModel):
+    id: int
+    name: str
+    category: str
+    original_price: float
+    new_price: Optional[float]
+    percentage_discount: Optional[int]
+    product_image: str
+
+    class Config:
+        from_attributes = True
 
 class Token(BaseModel):
     access_token: str
