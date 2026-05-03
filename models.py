@@ -9,7 +9,6 @@ class User(Base):
     username = Column(String(20),unique=True,nullable=False)  
     email = Column(String(200),unique=True,nullable=False)
     password = Column(String(100),nullable=False)
-    is_verified = Column(Boolean,default=False)
     join_date = Column(Date,default=date.today,nullable=False)
     businesses = relationship("Business", back_populates="owner")
 

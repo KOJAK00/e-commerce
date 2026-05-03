@@ -1,5 +1,6 @@
-blog.db
 __pycache__
-blog.db
+db.sqlite
 venv
 uploads/
+migrations/__pycache__
+migrations/versions/__pycache__
